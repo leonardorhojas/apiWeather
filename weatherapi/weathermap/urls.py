@@ -1,15 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import WeatherViewSet
-
+from weatherapi.weathermap import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'weather', WeatherViewSet, basename='weather')
-
+router.register(r'Weather', views.WeatherViewSet)
+router.register(r'users', views.UserViewSet)
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
 ]
 
