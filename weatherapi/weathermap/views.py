@@ -1,24 +1,37 @@
-from django.contrib.auth.models import User,  Weather
-from django.shortcuts import get_object_or_404
-from weatherapi.weathermap.serializers import UserSerializer,WeatherSerializer
+from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_framework import viewsets
 from rest_framework.response import Response
 
+from utils.weatherdata import retrieve_weather_data
+from .serializers import WeatherSerializer
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
-class WeatherViewSet(viewsets.ModelViewSet):
-    """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+DEFAULT_CITY = getattr(settings, 'DEFAULT_CITY')
+DEFAULT_COUNTRY = getattr(settings, 'DEFAULT_COUNTRY')
+CACHED_TIME = getattr(settings, 'CACHED_TIME')
 
-    Additionally we also provide an extra `highlight` action.
+
+class WeatherViewSet(viewsets.ViewSet):
     """
-    queryset = Snippet.objects.all()
+    API ViewSet that supports Weather retrieving data from openweatherco.com
+    """
     serializer_class = WeatherSerializer
 
+    @method_decorator(cache_page(CACHED_TIME))
+    @method_decorator(vary_on_cookie)
+    def list(self, request):
+        """
+        Retrieve Weather data for a specified city & country.
+        :param request:
+        :return: object with wheater data
+        """
+        city = request.query_params.get('city', DEFAULT_CITY)
+        country = request.query_params.get('country', DEFAULT_COUNTRY)
+        api_data = retrieve_weather_data(city=city, country=country)
+        serializer = WeatherSerializer(api_data)
+        result = Response(serializer.data)
+        result['Content-Type'] = 'application/json'
+        return result
