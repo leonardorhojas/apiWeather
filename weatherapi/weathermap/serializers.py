@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from weatherapi.weathermap.models import Weather
+from weathermap.models import Weather
 
 
 class WeatherSerializer(serializers.HyperlinkedModelSerializer):

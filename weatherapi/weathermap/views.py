@@ -1,15 +1,16 @@
-from django.contrib.auth.models import User,  Weather
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from weatherapi.weathermap.serializers import UserSerializer, WeatherSerializer
+from weathermap.serializers import UserSerializer, WeatherSerializer
 from rest_framework import viewsets
 from rest_framework.response import Response
-from weatherapi.utils.weatherdata import retrieve_weather_data
+from utils.weatherdata import retrieve_weather_data
+from weathermap.models import Weather
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
-    queryset = retrieve_weather_data()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 class WeatherViewSet(viewsets.ModelViewSet):
@@ -19,6 +20,7 @@ class WeatherViewSet(viewsets.ModelViewSet):
 
     Additionally we also provide an extra `highlight` action.
     """
-    queryset = Snippet.objects.all()
+    queryset = Weather.QuerySet.all()
+    #queryset = retrieve_weather_data('Bogota', 'CO')
     serializer_class = WeatherSerializer
 
