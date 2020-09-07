@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from utils.formatfields import unixtime_to_date
 
 
 class WeatherSerializer(serializers.Serializer):
@@ -26,31 +25,44 @@ class WeatherSerializer(serializers.Serializer):
     requested_time = serializers.SerializerMethodField('get_requested_time')
 
     def get_location_name(self, obj):
-        return obj.get('name') + ' , ' + obj.get('sys').get('country')
+        return obj.get('city').get('@name') + ' , ' + obj.get('city').get('country')
 
     def get_temperature(self, obj):
-        return (str(obj.get('main').get('temp') - 273.15)) + '°'
+        """
+        Convert kelvin to celsius temperature
+        :param obj:
+        :return:
+        """
+        celsyus_temp = float(obj.get('temperature').get('@value')) - 273.15
+        return '%.0f°C' % (celsyus_temp)
 
     def get_wind(self, obj):
-        return obj.get('wind')
+        wind_name_speed = obj.get('wind').get('speed').get('@name')
+        wind_value_speed = obj.get('wind').get('speed').get('@value')
+        # sometimes wind_direction is not set on the API / or the Wind doesn't have a direction
+        try:
+            wind_direction = obj.get('wind').get('direction').get('@name')
+        finally:
+            wind_direction = 'No data about wind direction'
+        return '%s , %s m/s, %s' % (wind_name_speed, wind_value_speed, wind_direction)
 
     def get_cloudiness(self, obj):
-        return obj.get('clouds')
+        return obj.get('clouds').get('@name')
 
     def get_pressure(self, obj):
-        return str(obj.get('main').get('pressure')) + ' hpa'
+        return obj.get('pressure').get('@value') + ' hPa'
 
     def get_humidity(self, obj):
-        return str(obj.get('main').get('humidity')) + '%'
+        return obj.get('humidity').get('@value') + '%'
 
     def get_sunrise(self, obj):
-        return unixtime_to_date(float(obj.get('sys').get('sunrise')), 'hour')
+        return obj.get('city').get('sun').get('@rise')
 
     def get_sunset(self, obj):
-        return unixtime_to_date(float(obj.get('sys').get('sunset')), 'hour')
+        return obj.get('city').get('sun').get('@set')
 
     def get_geo_coordinates(self, obj):
-        return '[' + str(obj.get('coord').get('lon')) + ' , ' + str(obj.get('coord').get('lat')) + ']'
+        return '[' + obj.get('city').get('coord').get('@lon') + ' , ' + obj.get('city').get('coord').get('@lat') + ']'
 
     def get_requested_time(self, obj):
-        return unixtime_to_date(obj.get('dt'), 'date')
+        return obj.get('lastupdate').get('@value')

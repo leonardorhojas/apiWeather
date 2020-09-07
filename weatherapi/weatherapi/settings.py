@@ -84,7 +84,7 @@ STATIC_URL = '/static/'
 
 # Application Settings loaded from environment variables
 API_TOKEN = os.getenv('WEATHER_API_ENDPOINT', '6ae93510c3bba0425faad68bd579a41c')
-WEATHER_API_ENDPOINT = os.getenv('WEATHER_API_ENDPOINT', 'http://api.openweathermap.org/data/2.5/weather?q=')
+WEATHER_API_ENDPOINT = os.getenv('WEATHER_API_ENDPOINT', 'http://api.openweathermap.org/data/2.5/weather')
 
 # Defatul Preseted variables to reach API and set a cache of 2 minutes
 DEFAULT_CITY = os.getenv('DEFAULT_CITY', 'bogota')
