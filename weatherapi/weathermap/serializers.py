@@ -25,7 +25,9 @@ class WeatherSerializer(serializers.Serializer):
     requested_time = serializers.SerializerMethodField('get_requested_time')
 
     def get_location_name(self, obj):
-        return obj.get('city').get('@name') + ' , ' + obj.get('city').get('country')
+        city = obj.get('city').get('@name')
+        country = obj.get('city').get('country')
+        return '%s , %s' % (city, country)
 
     def get_temperature(self, obj):
         """
@@ -34,16 +36,16 @@ class WeatherSerializer(serializers.Serializer):
         :return:
         """
         celsyus_temp = float(obj.get('temperature').get('@value')) - 273.15
-        return '%.0f°C' % (celsyus_temp)
+        return '%.0f °C' % (celsyus_temp)
 
     def get_wind(self, obj):
         wind_name_speed = obj.get('wind').get('speed').get('@name')
         wind_value_speed = obj.get('wind').get('speed').get('@value')
-        # sometimes wind_direction is not set on the API / or the Wind doesn't have a direction
+        # sometimes wind doesn't have a direction
         try:
             wind_direction = obj.get('wind').get('direction').get('@name')
-        finally:
-            wind_direction = 'No data about wind direction'
+        except:
+            wind_direction = 'No wind direction'
         return '%s , %s m/s, %s' % (wind_name_speed, wind_value_speed, wind_direction)
 
     def get_cloudiness(self, obj):
@@ -56,13 +58,17 @@ class WeatherSerializer(serializers.Serializer):
         return obj.get('humidity').get('@value') + '%'
 
     def get_sunrise(self, obj):
-        return obj.get('city').get('sun').get('@rise')
+        sunrise = obj.get('city').get('sun').get('@rise')[11:16]
+        return sunrise
 
     def get_sunset(self, obj):
-        return obj.get('city').get('sun').get('@set')
+        sunset = obj.get('city').get('sun').get('@set')[11:16]
+        return sunset
 
     def get_geo_coordinates(self, obj):
-        return '[' + obj.get('city').get('coord').get('@lon') + ' , ' + obj.get('city').get('coord').get('@lat') + ']'
+        city_longitude = obj.get('city').get('coord').get('@lon')
+        city_latitude = obj.get('city').get('coord').get('@lat')
+        return '[%s , %s]' % (city_longitude, city_latitude)
 
     def get_requested_time(self, obj):
         return obj.get('lastupdate').get('@value')
