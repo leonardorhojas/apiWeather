@@ -1,4 +1,7 @@
 from django.conf import settings
+from django.http import Http404
+from django.http import HttpResponseBadRequest
+from django.core.exceptions import SuspiciousOperation
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
@@ -33,7 +36,10 @@ class WeatherViewSet(viewsets.ViewSet):
         city = request.query_params.get('city', DEFAULT_CITY)
         country = request.query_params.get('country', DEFAULT_COUNTRY)
         # request the data to the http://api.openweathermap.org/ endpoint
-        api_data = retrieve_weather_data(city=city, country=country)
+        try:
+            api_data = retrieve_weather_data(city=city, country=country)
+        except:
+            raise Http404
         # parse data to the desired format
         serializer = WeatherSerializer(api_data)
         result = Response(serializer.data)
