@@ -1,6 +1,7 @@
 import requests
 from django.conf import settings
-
+import xmltodict
+import json
 
 API_TOKEN = getattr(settings, 'API_TOKEN')
 API_ENDPOINT = getattr(settings, 'WEATHER_API_ENDPOINT')
@@ -15,12 +16,14 @@ def retrieve_weather_data(city, country):
     """
     # pass city & country to the openweather endpoint
     country = country.lower()
-    url = API_ENDPOINT + city + ',' + country + '&appid=' + API_TOKEN
+    url = '%s?q=%s,%s&appid=%s&mode=xml' % (API_ENDPOINT, city, country, API_TOKEN)
     # retrieves answer from the endpoint and format it to json
     response = requests.get(url)
-    data = response.json()
+    data = xmltodict.parse(response.text)
+    print(data)
+
     # check status of the response previous to render data or raise an error
     if response.status_code == 200:
-        return data
+        return data.get('current')
     else:
         raise Exception('Not valid response from API http://api.openweathermap.org/ ')
