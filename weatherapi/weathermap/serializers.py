@@ -1,13 +1,24 @@
 from rest_framework import serializers
-from utils.formatdates import unixtime_to_date
+from utils.formatfields import unixtime_to_date
 
 
 class WeatherSerializer(serializers.Serializer):
+    """
+    Serializer to format output from http://api.openweathermap.org/ to specific fields in a human readable format:
+    temperature is formatted to Celsius
+    pressure us formatted to hpa
+    humidity is formatted to %
+    sunrise/sunset is formatted to HH:MM
+    geo_coordinates is formatted to [lat , long]
+    requested_time is formatted to YYYY-MM-DD HH:MM:SS
+    wind is formated in a  human readble scale and speed of wind in m/s
+    cloudines is formated in a human readable scale
+    """
     location_name = serializers.SerializerMethodField('get_location_name')
     temperature = serializers.SerializerMethodField('get_temperature')
     wind = serializers.SerializerMethodField('get_wind')
     cloudiness = serializers.SerializerMethodField('get_cloudiness')
-    presure = serializers.SerializerMethodField('get_presure')
+    pressure = serializers.SerializerMethodField('get_pressure')
     humidity = serializers.SerializerMethodField('get_humidity')
     sunrise = serializers.SerializerMethodField('get_sunrise')
     sunset = serializers.SerializerMethodField('get_sunset')
@@ -26,7 +37,7 @@ class WeatherSerializer(serializers.Serializer):
     def get_cloudiness(self, obj):
         return obj.get('clouds')
 
-    def get_presure(self, obj):
+    def get_pressure(self, obj):
         return str(obj.get('main').get('pressure')) + ' hpa'
 
     def get_humidity(self, obj):

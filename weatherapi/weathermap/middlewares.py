@@ -4,9 +4,11 @@ class LoggingMiddleware:
         # One-time configuration and initialization.
 
     def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-
+        """
+        Method to put output including errors in a middleware, formatting the output in Json format
+        :param request:
+        :return: retrieves the response/requests most representative  information to terminal
+        """
         response = self.get_response(request)
         logged_data = {
             'response_status_code': response.status_code,
