@@ -8,8 +8,8 @@ GET /weather?city=$City&country=$co
 Response:  {
     "location_name": "Bogota, CO",
     "temperature": "17 °C", → Temp en Kelvins
-    "wind": Gentle breeze, 3.6 m/s, west-northwest",  → API(??)
-    "cloudines": "Scattered clouds", → API(???)
+    "wind": Gentle breeze, 3.6 m/s, west-northwest",  
+    "cloudines": "Scattered clouds", 
     "presure": "1027 hpa",
     "humidity": "63%", 
     "sunrise": "06:07", 
