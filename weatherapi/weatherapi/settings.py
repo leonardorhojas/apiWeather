@@ -70,15 +70,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'weatherapi.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
@@ -89,6 +86,7 @@ STATIC_URL = '/static/'
 API_TOKEN = os.getenv('WEATHER_API_ENDPOINT', '6ae93510c3bba0425faad68bd579a41c')
 WEATHER_API_ENDPOINT = os.getenv('WEATHER_API_ENDPOINT', 'http://api.openweathermap.org/data/2.5/weather?q=')
 
+# Defatul Preseted variables to reach API and set a cache of 2 minutes
 DEFAULT_CITY = os.getenv('DEFAULT_CITY', 'bogota')
 DEFAULT_COUNTRY = os.getenv('DEFAULT_COUNTRY', 'co')
 CACHED_TIME = os.getenv('CACHED_TIME', 60 * 2)

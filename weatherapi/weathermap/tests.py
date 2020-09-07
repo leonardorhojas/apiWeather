@@ -4,15 +4,30 @@ from rest_framework.utils import json
 
 
 class API_Test_Case(TestCase):
+    """
+    3 UnitTest Test cases checking the availability of the endpoint, data of the endpoint, and location
+    """
 
     def SetUp(self):
+        """
+        SetingUp the Test Cases
+        :return: APIClint Object
+        """
         self.client = APIClient()
 
     def test_request(self):
+        """
+        Test the status_code making a request to the endpoint
+        :return:
+        """
         request = self.client.get('/weather/?city=medellin&country=co')
         assert request.status_code == 200
 
     def test_data(self):
+        """
+        Test the mock data vs the entire data retrieved by the endpoint
+        :return: assert checking that the data differs
+        """
         moked_data = {'location_name': 'Medellín , CO', 'temperature': '16.83000000000004°',
                       'wind': {'speed': 2.1, 'deg': 110}, 'cloudiness': {'all': 40}, 'presure': '1023 hpa',
                       'humidity': '60%', 'sunrise': '05:54', 'sunset': '18:06',
@@ -21,9 +36,11 @@ class API_Test_Case(TestCase):
         self.assertNotEqual(json.loads(request.content), moked_data)
 
     def test_static_data(self):
-        moked_location_name =  'Medellín , CO'
+        """
+        Check the location name of the endpoint
+        :return: assert if the location is equal to the Unit Test data
+        """
+        moked_location_name = 'Medellín , CO'
         request = self.client.get('/weather/?city=medellin&country=co')
         request_data = json.loads(request.content)
         self.assertEqual(request_data.get('location_name'), moked_location_name)
-
-
