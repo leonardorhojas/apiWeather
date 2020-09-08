@@ -48,6 +48,16 @@ cd somepath/apiWeather/weatherapi
 
 python manage.py runserver
 ```
+you can set the following OS ENV Variables to set some features:
+
+# Application Settings loaded from environment variables
+WEATHER_API_TOKEN = 'your openwhaterapitoken'
+WEATHER_API_ENDPOINT = should be: 'http://api.openweathermap.org/data/2.5/weather')
+
+# Defatul Preseted variables to reach API and set a cache of 2 minutes
+DEFAULT_CITY= 'bogota')
+DEFAULT_COUNTRY = 'co'
+CACHED_TIME = '60 * 2'
 
 
 ## License
